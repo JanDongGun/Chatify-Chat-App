@@ -30,17 +30,21 @@ class _RegisPageState extends State<RegisPage> {
   }
 
   Widget signupPageUI() {
-    return Container(
-      height: _deviceHeight * 0.8,
-      padding: EdgeInsets.symmetric(horizontal: _deviceWidth * 0.1),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _headingWidget(),
-          _inputForm(),
-        ],
+    return Flexible(
+      child: Container(
+        height: _deviceHeight * 0.9,
+        padding: EdgeInsets.symmetric(horizontal: _deviceWidth * 0.1),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _headingWidget(),
+            _inputForm(),
+            _registerButton(),
+            _backToLoginPageButton(),
+          ],
+        ),
       ),
     );
   }
@@ -86,6 +90,9 @@ class _RegisPageState extends State<RegisPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _imageSelectorWidget(),
+            _nameTextField(),
+            _emailTextField(),
+            _passwordTextField(),
           ],
         ),
       ),
@@ -104,6 +111,101 @@ class _RegisPageState extends State<RegisPage> {
             fit: BoxFit.cover,
             image: AssetImage('images/iconAvatar.png'),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _nameTextField() {
+    return TextFormField(
+      autocorrect: false,
+      style: TextStyle(color: Colors.white),
+      validator: (_input) {
+        return _input.length != 0 ? null : 'Please enter name';
+      },
+      onSaved: (_input) {
+        setState(() {});
+      },
+      cursorColor: Colors.white,
+      decoration: InputDecoration(
+        hintText: 'Name',
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _emailTextField() {
+    return TextFormField(
+      autocorrect: false,
+      style: TextStyle(color: Colors.white),
+      validator: (_input) {
+        return _input.length != 0 && _input.contains('@')
+            ? null
+            : 'Please enter a valid email';
+      },
+      onSaved: (_input) {
+        setState(() {});
+      },
+      cursorColor: Colors.white,
+      decoration: InputDecoration(
+        hintText: 'Email address',
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _passwordTextField() {
+    return TextFormField(
+      autocorrect: false,
+      obscureText: true,
+      style: TextStyle(color: Colors.white),
+      validator: (_input) {
+        return _input.length != 0 ? null : 'Please enter password';
+      },
+      onSaved: (_input) {
+        setState(() {});
+      },
+      cursorColor: Colors.white,
+      decoration: InputDecoration(
+        hintText: 'Password',
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _registerButton() {
+    return Container(
+      height: _deviceHeight * 0.07,
+      width: _deviceWidth,
+      child: MaterialButton(
+        onPressed: () {},
+        color: Colors.blue,
+        child: Text(
+          'Register',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _backToLoginPageButton() {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        height: _deviceHeight * 0.07,
+        width: _deviceWidth,
+        child: Icon(
+          Icons.arrow_back,
+          size: 40,
         ),
       ),
     );
