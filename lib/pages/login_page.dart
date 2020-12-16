@@ -1,3 +1,4 @@
+import 'package:chatify/services/snackbar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:chatify/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   String _password;
 
   GlobalKey<FormState> _formKey;
+  AuthProvider _auth;
   _LoginPageState() {
     _formKey = GlobalKey<FormState>();
   }
@@ -26,29 +28,36 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: Align(
         alignment: Alignment.center,
-        child: _loginPageUI(),
+        child: ChangeNotifierProvider<AuthProvider>.value(
+          value: AuthProvider.instance,
+          child: _loginPageUI(),
+        ),
       ),
     );
   }
 
   Widget _loginPageUI() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: _deviceWidth * 0.1, vertical: _deviceHeight * 0.02),
-      alignment: Alignment.center,
-      height: _deviceHeight * 0.8,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          _headingWidget(),
-          _inputForm(),
-          _loginButton(),
-          _registerButton(),
-        ],
-      ),
-    );
+    return Builder(builder: (BuildContext _context) {
+      SnackBarService.instance.buildContext = _context;
+      _auth = Provider.of<AuthProvider>(_context);
+      return Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: _deviceWidth * 0.1, vertical: _deviceHeight * 0.02),
+        alignment: Alignment.center,
+        height: _deviceHeight * 0.8,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            _headingWidget(),
+            _inputForm(),
+            _loginButton(),
+            _registerButton(),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _headingWidget() {
@@ -147,25 +156,30 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _loginButton() {
-    return Container(
-      height: _deviceHeight * 0.07,
-      width: _deviceWidth,
-      child: MaterialButton(
-        onPressed: () {
-          if (_formKey.currentState.validate()) {
-            print("valid stuff");
-          }
-        },
-        color: Colors.blue,
-        child: Text(
-          'Login',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-    );
+    return _auth.status == AuthStatus.Authenticating
+        ? Align(
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(),
+          )
+        : Container(
+            height: _deviceHeight * 0.07,
+            width: _deviceWidth,
+            child: MaterialButton(
+              onPressed: () {
+                if (_formKey.currentState.validate()) {
+                  _auth.loginUserWithEmailAndPassword(_email, _password);
+                }
+              },
+              color: Colors.blue,
+              child: Text(
+                'Login',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          );
   }
 
   Widget _registerButton() {

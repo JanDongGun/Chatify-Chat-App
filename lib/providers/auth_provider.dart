@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chatify/services/snackbar_service.dart';
 
 enum AuthStatus {
   NotAuthenticated,
@@ -19,7 +20,7 @@ class AuthProvider extends ChangeNotifier {
     _auth = FirebaseAuth.instance;
   }
 
-  void loginUserWithEmailandPassword(String _email, String _password) async {
+  void loginUserWithEmailAndPassword(String _email, String _password) async {
     status = AuthStatus.Authenticating;
     notifyListeners();
     try {
@@ -27,9 +28,10 @@ class AuthProvider extends ChangeNotifier {
           email: _email, password: _password);
       user = _result.user;
       status = AuthStatus.Authenticated;
-      print('Logged in succesfully');
+      SnackBarService.instance.showSnackBar('Welcome ${user.email}', 'success');
     } catch (e) {
       status = AuthStatus.Error;
+      SnackBarService.instance.showSnackBar('Error Authenticating', 'error');
     }
 
     notifyListeners();
