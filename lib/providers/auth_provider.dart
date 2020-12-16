@@ -21,12 +21,17 @@ class AuthProvider extends ChangeNotifier {
 
   void loginUserWithEmailandPassword(String _email, String _password) async {
     status = AuthStatus.Authenticating;
+    notifyListeners();
     try {
       UserCredential _result = await _auth.signInWithEmailAndPassword(
           email: _email, password: _password);
       user = _result.user;
       status = AuthStatus.Authenticated;
       print('Logged in succesfully');
-    } catch (e) {}
+    } catch (e) {
+      status = AuthStatus.Error;
+    }
+
+    notifyListeners();
   }
 }

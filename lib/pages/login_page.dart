@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:chatify/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,6 +10,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   double _deviceHeight;
   double _deviceWidth;
+  String _email;
+  String _password;
 
   GlobalKey<FormState> _formKey;
   _LoginPageState() {
@@ -76,10 +80,12 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _inputForm() {
     return Container(
-      height: _deviceHeight * 0.18,
+      height: _deviceHeight * 0.25,
       child: Form(
         key: _formKey,
-        onChanged: () {},
+        onChanged: () {
+          _formKey.currentState.save();
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,8 +103,16 @@ class _LoginPageState extends State<LoginPage> {
     return TextFormField(
       autocorrect: false,
       style: TextStyle(color: Colors.white),
-      validator: (_input) {},
-      onSaved: (_input) {},
+      validator: (_input) {
+        return _input.length != 0 && _input.contains('@')
+            ? null
+            : 'Please enter a valid email';
+      },
+      onSaved: (_input) {
+        setState(() {
+          _email = _input;
+        });
+      },
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: 'Email address',
@@ -114,8 +128,14 @@ class _LoginPageState extends State<LoginPage> {
       autocorrect: false,
       obscureText: true,
       style: TextStyle(color: Colors.white),
-      validator: (_input) {},
-      onSaved: (_input) {},
+      validator: (_input) {
+        return _input.length != 0 ? null : 'Please enter password';
+      },
+      onSaved: (_input) {
+        setState(() {
+          _password = _input;
+        });
+      },
       cursorColor: Colors.white,
       decoration: InputDecoration(
         hintText: 'Password',
@@ -131,7 +151,11 @@ class _LoginPageState extends State<LoginPage> {
       height: _deviceHeight * 0.07,
       width: _deviceWidth,
       child: MaterialButton(
-        onPressed: () {},
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            print("valid stuff");
+          }
+        },
         color: Colors.blue,
         child: Text(
           'Login',
