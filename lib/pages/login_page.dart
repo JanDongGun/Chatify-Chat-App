@@ -2,6 +2,7 @@ import 'package:chatify/services/snackbar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:chatify/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:chatify/services/navigation_service.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -184,7 +185,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _registerButton() {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        NavigationService.instance.navigateTo('regis');
+      },
       child: Container(
         width: _deviceWidth,
         height: _deviceHeight * 0.07,

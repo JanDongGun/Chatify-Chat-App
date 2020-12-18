@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:chatify/services/navigation_service.dart';
 
 class RegisPage extends StatefulWidget {
   @override
@@ -199,7 +200,9 @@ class _RegisPageState extends State<RegisPage> {
 
   Widget _backToLoginPageButton() {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        NavigationService.instance.goBack();
+      },
       child: Container(
         height: _deviceHeight * 0.07,
         width: _deviceWidth,
