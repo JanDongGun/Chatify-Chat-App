@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:chatify/services/media_service.dart';
 import 'package:flutter/material.dart';
 import 'package:chatify/services/navigation_service.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisPage extends StatefulWidget {
   @override
@@ -9,6 +13,7 @@ class RegisPage extends StatefulWidget {
 class _RegisPageState extends State<RegisPage> {
   double _deviceHeight;
   double _deviceWidth;
+  File _image;
 
   GlobalKey<FormState> _globalKey;
 
@@ -101,16 +106,29 @@ class _RegisPageState extends State<RegisPage> {
   }
 
   Widget _imageSelectorWidget() {
-    return Align(
-      child: Container(
-        height: _deviceHeight * 0.1,
-        width: _deviceHeight * 0.1,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(500),
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage('images/iconAvatar.png'),
+    return GestureDetector(
+      onTap: () async {
+        PickedFile _imageFile =
+            await MediaService.instance.getImageFromLibrary();
+        setState(() {
+          if (_imageFile != null) {
+            _image = File(_imageFile.path);
+          }
+        });
+      },
+      child: Align(
+        child: Container(
+          height: _deviceHeight * 0.12,
+          width: _deviceHeight * 0.12,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(500),
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: _image != null
+                  ? FileImage(_image)
+                  : AssetImage('images/iconAvatar.png'),
+            ),
           ),
         ),
       ),
