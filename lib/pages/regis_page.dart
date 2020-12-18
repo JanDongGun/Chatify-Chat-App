@@ -14,6 +14,9 @@ class _RegisPageState extends State<RegisPage> {
   double _deviceHeight;
   double _deviceWidth;
   File _image;
+  String _name;
+  String _email;
+  String _password;
 
   GlobalKey<FormState> _globalKey;
 
@@ -143,7 +146,9 @@ class _RegisPageState extends State<RegisPage> {
         return _input.length != 0 ? null : 'Please enter name';
       },
       onSaved: (_input) {
-        setState(() {});
+        setState(() {
+          _name = _input;
+        });
       },
       cursorColor: Colors.white,
       decoration: InputDecoration(
@@ -165,7 +170,9 @@ class _RegisPageState extends State<RegisPage> {
             : 'Please enter a valid email';
       },
       onSaved: (_input) {
-        setState(() {});
+        setState(() {
+          _email = _input;
+        });
       },
       cursorColor: Colors.white,
       decoration: InputDecoration(
@@ -186,7 +193,9 @@ class _RegisPageState extends State<RegisPage> {
         return _input.length != 0 ? null : 'Please enter password';
       },
       onSaved: (_input) {
-        setState(() {});
+        setState(() {
+          _password = _input;
+        });
       },
       cursorColor: Colors.white,
       decoration: InputDecoration(
