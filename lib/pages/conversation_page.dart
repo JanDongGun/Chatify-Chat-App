@@ -1,3 +1,4 @@
+import 'package:chatify/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -57,6 +58,7 @@ class _ConversationPageState extends State<ConversationPage> {
 
   Widget _messageListView() {
     return Container(
+      margin: EdgeInsets.only(top: 20),
       height: _deviceHeight * 0.75,
       width: _deviceWidth,
       child: StreamBuilder(
@@ -71,8 +73,7 @@ class _ConversationPageState extends State<ConversationPage> {
                   itemBuilder: (BuildContext _context, int _index) {
                     var _message = _conversationData.messages[_index];
                     bool _isOwnMessage = _message.senderID == _auth.user.uid;
-                    return _textMessageBubble(
-                        _isOwnMessage, _message.content, _message.timestamp);
+                    return _messageListViewChild(_isOwnMessage, _message);
                   });
             } else {
               return SpinKitWanderingCubes(
@@ -84,17 +85,57 @@ class _ConversationPageState extends State<ConversationPage> {
     );
   }
 
+  Widget _messageListViewChild(bool _isOwnMessage, Message _message) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment:
+            !_isOwnMessage ? MainAxisAlignment.start : MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          _userImageWidget(_isOwnMessage),
+          SizedBox(
+            width: 15,
+          ),
+          _textMessageBubble(
+              _isOwnMessage, _message.content, _message.timestamp),
+        ],
+      ),
+    );
+  }
+
+  Widget _userImageWidget(bool _isOwnMessage) {
+    double _imageRadius = _deviceHeight * 0.05;
+
+    return !_isOwnMessage
+        ? Container(
+            width: _imageRadius,
+            height: _imageRadius,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(this.widget._receiverImage),
+              ),
+            ),
+          )
+        : Container();
+  }
+
   Widget _textMessageBubble(
       bool _isOwnerMessage, String _message, Timestamp _messageTimestamp) {
     List<Color> _colorScheme = _isOwnerMessage
         ? [Colors.blue, Color.fromRGBO(42, 117, 188, 1)]
         : [Color.fromRGBO(69, 69, 69, 1), Color.fromRGBO(43, 43, 43, 1)];
     return Container(
-      // height: _deviceHeight * 0.1,
-      width: _deviceWidth * 0.75,
+      margin: _isOwnerMessage
+          ? EdgeInsets.only(right: 20)
+          : EdgeInsets.only(right: 0),
+      width: _deviceWidth * 0.6,
       padding: EdgeInsets.symmetric(horizontal: 30, vertical: 13),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(10),
           gradient: LinearGradient(
             colors: _colorScheme,
             stops: [0.30, 0.70],
@@ -105,9 +146,14 @@ class _ConversationPageState extends State<ConversationPage> {
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(_message),
+          Text(
+            _message,
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
           SizedBox(
-            height: 10,
+            height: 8,
           ),
           Text(
             timeago.format(_messageTimestamp.toDate()),
