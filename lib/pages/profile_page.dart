@@ -1,35 +1,60 @@
+import 'package:chatify/models/contact.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:chatify/providers/auth_provider.dart';
+import 'package:chatify/services/db_service.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ProfilePage extends StatelessWidget {
   final double _height;
   final double _width;
 
   ProfilePage(this._height, this._width);
+  AuthProvider _auth;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: _profilePageUI(),
+      color: Theme.of(context).backgroundColor,
+      height: _height,
+      width: _width,
+      child: ChangeNotifierProvider<AuthProvider>.value(
+        value: AuthProvider.instance,
+        child: _profilePageUI(),
+      ),
     );
   }
 
   Widget _profilePageUI() {
-    return Align(
-      child: SizedBox(
-        height: _height * 0.5,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _userImageWidget('aa'),
-            _userNameWidget('Dong Gon'),
-            _userEmailWidget('donggon@gmail.com'),
-            _logoutButton(),
-          ],
-        ),
-      ),
-    );
+    return Builder(builder: (BuildContext _context) {
+      _auth = Provider.of<AuthProvider>(_context);
+      return StreamBuilder<Contact>(
+          stream: DBService.instance.getUserData(_auth.user.uid),
+          builder: (_context, _snapshot) {
+            var _userData = _snapshot.data;
+            return _snapshot.hasData
+                ? Align(
+                    child: SizedBox(
+                      height: _height * 0.5,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _userImageWidget(_userData.image),
+                          _userNameWidget(_userData.name),
+                          _userEmailWidget(_userData.email),
+                          _logoutButton(),
+                        ],
+                      ),
+                    ),
+                  )
+                : SpinKitWanderingCubes(
+                    color: Colors.blue,
+                    size: 50,
+                  );
+          });
+    });
   }
 
   Widget _userImageWidget(String _image) {
@@ -42,7 +67,7 @@ class ProfilePage extends StatelessWidget {
           borderRadius: BorderRadius.circular(_imageRadius),
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: AssetImage('images/iconAvatar.png'),
+            image: NetworkImage(_image),
           )),
     );
   }
@@ -82,7 +107,9 @@ class ProfilePage extends StatelessWidget {
       height: _height * 0.1,
       width: _width * 0.8,
       child: MaterialButton(
-        onPressed: () {},
+        onPressed: () {
+          _auth.logoutUser(() {});
+        },
         color: Colors.red,
         child: Text(
           'Log Out',
