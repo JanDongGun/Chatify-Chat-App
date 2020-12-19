@@ -45,4 +45,16 @@ class DBService {
       }).toList();
     });
   }
+
+  Stream getUserInDB(String _searchName) {
+    var _ref = _db
+        .collection(_userCollection)
+        .where("name", isGreaterThanOrEqualTo: _searchName)
+        .where("name", isLessThan: _searchName + 'z');
+    return _ref.get().asStream().map((_snapshot) {
+      return _snapshot.docs.map((_doc) {
+        return Contact.fromFirestore(_doc);
+      }).toList();
+    });
+  }
 }

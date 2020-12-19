@@ -13,7 +13,7 @@ class Contact {
     var _data = _snapshot.data();
     return Contact(
       id: _snapshot.id,
-      lastseen: _data["lastseen"],
+      lastseen: _data["lastScreen"],
       email: _data["email"],
       name: _data["name"],
       image: _data["image"],
