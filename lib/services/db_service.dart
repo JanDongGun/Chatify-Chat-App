@@ -1,3 +1,4 @@
+import 'package:chatify/models/conversation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chatify/models/contact.dart';
 
@@ -10,6 +11,7 @@ class DBService {
   }
 
   String _userCollection = "Users";
+  String _userConversations = "Conversations";
 
   Future<void> createUserInDB(
       String _uid, String _name, String _email, String _imageURL) {
@@ -29,6 +31,18 @@ class DBService {
     var _ref = _db.collection(_userCollection).doc(_userID);
     return _ref.get().asStream().map((_snapshot) {
       return Contact.fromFirestore(_snapshot);
+    });
+  }
+
+  Stream<List<ConversationSnippet>> getUserConversation(String _uid) {
+    var _ref = _db
+        .collection(_userCollection)
+        .doc(_uid)
+        .collection(_userConversations);
+    return _ref.snapshots().map((_snapshot) {
+      return _snapshot.docs.map((_doc) {
+        return ConversationSnippet.fromFirestore(_doc);
+      }).toList();
     });
   }
 }
