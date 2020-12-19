@@ -51,6 +51,10 @@ class _ConversationPageState extends State<ConversationPage> {
         overflow: Overflow.visible,
         children: [
           _messageListView(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _messageField(_context),
+          )
         ],
       );
     });
@@ -162,6 +166,80 @@ class _ConversationPageState extends State<ConversationPage> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _messageField(BuildContext _context) {
+    return Container(
+      height: _deviceHeight * 0.08,
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(43, 43, 43, 1),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      margin: EdgeInsets.symmetric(
+          horizontal: _deviceWidth * 0.04, vertical: _deviceHeight * 0.03),
+      child: Form(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _messageTextField(),
+            _sendMessageButton(_context),
+            _imageMessageButton(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _messageTextField() {
+    return SizedBox(
+      width: _deviceWidth * 0.55,
+      child: TextFormField(
+        autocorrect: false,
+        validator: (_input) {
+          if (_input.length == 0) {
+            return "Please enter a message";
+          }
+
+          return null;
+        },
+        onChanged: (_input) {},
+        onSaved: (_input) {},
+        cursorColor: Colors.white,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: "Type a message",
+          hintStyle: TextStyle(
+            color: Colors.white54,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _sendMessageButton(BuildContext _context) {
+    return Container(
+      height: _deviceHeight * 0.05,
+      width: _deviceHeight * 0.05,
+      child: IconButton(
+          icon: Icon(
+            Icons.send,
+            color: Colors.white,
+          ),
+          onPressed: () {}),
+    );
+  }
+
+  Widget _imageMessageButton() {
+    return Container(
+      height: _deviceHeight * 0.05,
+      width: _deviceHeight * 0.05,
+      child: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.camera_enhance),
       ),
     );
   }
