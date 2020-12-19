@@ -1,6 +1,6 @@
-import 'package:chatify/models/conversation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chatify/models/contact.dart';
+import '../models/conversation.dart';
 
 class DBService {
   FirebaseFirestore _db;

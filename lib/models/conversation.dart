@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'message.dart';
+import '../models/message.dart';
 
 class ConversationSnippet {
   final String id;
@@ -48,14 +48,12 @@ class Conversation {
     List _messages = _data["messages"];
 
     if (_messages != null) {
-      _messages.map((_m) {
-        var _messageType =
-            _m["type"] == "text" ? MessageType.Text : MessageType.Image;
+      _messages = _messages.map((_m) {
         return Message(
           senderID: _m["senderID"],
           content: _m["message"],
           timestamp: _m["timestamp"],
-          type: _messageType,
+          type: _m["type"] == "text" ? MessageType.Text : MessageType.Image,
         );
       }).toList();
     } else {
