@@ -99,23 +99,25 @@ class _RegisPageState extends State<RegisPage> {
   }
 
   Widget _inputForm() {
-    return Container(
-      height: _deviceHeight * 0.5,
-      child: Form(
-        key: _globalKey,
-        onChanged: () {
-          _globalKey.currentState.save();
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _imageSelectorWidget(),
-            _nameTextField(),
-            _emailTextField(),
-            _passwordTextField(),
-          ],
+    return Flexible(
+      child: Container(
+        height: _deviceHeight * 0.4,
+        child: Form(
+          key: _globalKey,
+          onChanged: () {
+            _globalKey.currentState.save();
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _imageSelectorWidget(),
+              _nameTextField(),
+              _emailTextField(),
+              _passwordTextField(),
+            ],
+          ),
         ),
       ),
     );
@@ -152,69 +154,75 @@ class _RegisPageState extends State<RegisPage> {
   }
 
   Widget _nameTextField() {
-    return TextFormField(
-      autocorrect: false,
-      style: TextStyle(color: Colors.white),
-      validator: (_input) {
-        return _input.length != 0 ? null : 'Please enter name';
-      },
-      onSaved: (_input) {
-        setState(() {
-          _name = _input;
-        });
-      },
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        hintText: 'Name',
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+    return Flexible(
+      child: TextFormField(
+        autocorrect: false,
+        style: TextStyle(color: Colors.white),
+        validator: (_input) {
+          return _input.length != 0 ? null : 'Please enter name';
+        },
+        onSaved: (_input) {
+          setState(() {
+            _name = _input;
+          });
+        },
+        cursorColor: Colors.white,
+        decoration: InputDecoration(
+          hintText: 'Name',
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
         ),
       ),
     );
   }
 
   Widget _emailTextField() {
-    return TextFormField(
-      autocorrect: false,
-      style: TextStyle(color: Colors.white),
-      validator: (_input) {
-        return _input.length != 0 && _input.contains('@')
-            ? null
-            : 'Please enter a valid email';
-      },
-      onSaved: (_input) {
-        setState(() {
-          _email = _input;
-        });
-      },
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        hintText: 'Email address',
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+    return Flexible(
+      child: TextFormField(
+        autocorrect: false,
+        style: TextStyle(color: Colors.white),
+        validator: (_input) {
+          return _input.length != 0 && _input.contains('@')
+              ? null
+              : 'Please enter a valid email';
+        },
+        onSaved: (_input) {
+          setState(() {
+            _email = _input;
+          });
+        },
+        cursorColor: Colors.white,
+        decoration: InputDecoration(
+          hintText: 'Email address',
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
         ),
       ),
     );
   }
 
   Widget _passwordTextField() {
-    return TextFormField(
-      autocorrect: false,
-      obscureText: true,
-      style: TextStyle(color: Colors.white),
-      validator: (_input) {
-        return _input.length != 0 ? null : 'Please enter password';
-      },
-      onSaved: (_input) {
-        setState(() {
-          _password = _input;
-        });
-      },
-      cursorColor: Colors.white,
-      decoration: InputDecoration(
-        hintText: 'Password',
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white),
+    return Flexible(
+      child: TextFormField(
+        autocorrect: false,
+        obscureText: true,
+        style: TextStyle(color: Colors.white),
+        validator: (_input) {
+          return _input.length != 0 ? null : 'Please enter password';
+        },
+        onSaved: (_input) {
+          setState(() {
+            _password = _input;
+          });
+        },
+        cursorColor: Colors.white,
+        decoration: InputDecoration(
+          hintText: 'Password',
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
         ),
       ),
     );
