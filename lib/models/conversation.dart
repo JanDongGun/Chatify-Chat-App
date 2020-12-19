@@ -36,7 +36,7 @@ class ConversationSnippet {
 
 class Conversation {
   final String id;
-  final List<String> members;
+  final List members;
   final List<Message> messages;
   final String ownerID;
 
@@ -59,7 +59,7 @@ class Conversation {
         );
       }).toList();
     } else {
-      _messages = null;
+      _messages = [];
     }
 
     return Conversation(
