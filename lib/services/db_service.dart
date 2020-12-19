@@ -27,6 +27,11 @@ class DBService {
     }
   }
 
+  Future<void> updateUserLastSeenTime(String _userID) {
+    var _ref = _db.collection(_userCollection).doc(_userID);
+    return _ref.update({"lastScreen": Timestamp.now()});
+  }
+
   Stream<Contact> getUserData(String _userID) {
     var _ref = _db.collection(_userCollection).doc(_userID);
     return _ref.get().asStream().map((_snapshot) {

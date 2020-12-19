@@ -2,6 +2,7 @@ import 'package:chatify/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chatify/services/snackbar_service.dart';
+import 'package:chatify/services/db_service.dart';
 
 enum AuthStatus {
   NotAuthenticated,
@@ -30,7 +31,7 @@ class AuthProvider extends ChangeNotifier {
       user = _result.user;
       status = AuthStatus.Authenticated;
       SnackBarService.instance.showSnackBar('Welcome ${user.email}', 'success');
-
+      DBService.instance.updateUserLastSeenTime(user.uid);
       NavigationService.instance.navigateToReplacement('home');
     } catch (e) {
       status = AuthStatus.Error;
@@ -62,7 +63,10 @@ class AuthProvider extends ChangeNotifier {
       NavigationService.instance.goBack();
     } catch (e) {
       status = AuthStatus.Error;
-      if (e.code == 'email-already-in-use') {
+      if (e.code == 'weak-password') {
+        SnackBarService.instance
+            .showSnackBar('The password provided is too weak.', 'error');
+      } else if (e.code == 'email-already-in-use') {
         SnackBarService.instance
             .showSnackBar('The account already exists for that email', 'error');
       }

@@ -36,34 +36,44 @@ class RecentConversationsPage extends StatelessWidget {
               stream: DBService.instance.getUserConversation(_auth.user.uid),
               builder: (_context, _snapshot) {
                 var _data = _snapshot.data;
-                return _snapshot.hasData
-                    ? ListView.builder(
-                        itemCount: _data.length,
-                        itemBuilder: (_context, _index) {
-                          return ListTile(
-                            onTap: () {},
-                            title: Text(_data[_index].name),
-                            subtitle: Text(_data[_index].lastMessage),
-                            leading: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(_data[_index].image),
+                if (_data != null) {
+                  return _data.length != 0
+                      ? ListView.builder(
+                          itemCount: _data.length,
+                          itemBuilder: (_context, _index) {
+                            return ListTile(
+                              onTap: () {},
+                              title: Text(_data[_index].name),
+                              subtitle: Text(_data[_index].lastMessage),
+                              leading: Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(_data[_index].image),
+                                  ),
                                 ),
                               ),
-                            ),
-                            trailing: _listTileTrailingWidgets(
-                                _data[_index].timestamp),
-                          );
-                        },
-                      )
-                    : SpinKitWanderingCubes(
-                        color: Colors.blue,
-                        size: 50,
-                      );
+                              trailing: _listTileTrailingWidgets(
+                                  _data[_index].timestamp),
+                            );
+                          },
+                        )
+                      : Center(
+                          child: Text(
+                            'No Conversations Yet!',
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.white30),
+                          ),
+                        );
+                } else {
+                  return SpinKitWanderingCubes(
+                    color: Colors.blue,
+                    size: 50,
+                  );
+                }
               }));
     });
   }
@@ -78,17 +88,15 @@ class RecentConversationsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          timeago.format(_lastMessageTimestamp.toDate()),
+          'Last Message',
           style: TextStyle(
             fontSize: 15,
           ),
         ),
-        Container(
-          height: 12,
-          width: 12,
-          decoration: BoxDecoration(
-            color: _timeDifference.inHours > 1 ? Colors.green : Colors.red,
-            borderRadius: BorderRadius.circular(50),
+        Text(
+          timeago.format(_lastMessageTimestamp.toDate()),
+          style: TextStyle(
+            fontSize: 15,
           ),
         ),
       ],
