@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:chatify/providers/auth_provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:chatify/services/navigation_service.dart';
+import 'package:chatify/pages/conversation_page.dart';
 
 class RecentConversationsPage extends StatelessWidget {
   final double _width;
@@ -42,7 +44,17 @@ class RecentConversationsPage extends StatelessWidget {
                           itemCount: _data.length,
                           itemBuilder: (_context, _index) {
                             return ListTile(
-                              onTap: () {},
+                              onTap: () {
+                                NavigationService.instance.navigateToRoute(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext _context) {
+                                  return ConversationPage(
+                                      _data[_index].conversationID,
+                                      _data[_index].id,
+                                      _data[_index].image,
+                                      _data[_index].name);
+                                }));
+                              },
                               title: Text(_data[_index].name),
                               subtitle: Text(_data[_index].lastMessage),
                               leading: Container(
@@ -79,9 +91,6 @@ class RecentConversationsPage extends StatelessWidget {
   }
 
   Widget _listTileTrailingWidgets(Timestamp _lastMessageTimestamp) {
-    var _timeDifference =
-        _lastMessageTimestamp.toDate().difference(DateTime.now());
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       mainAxisSize: MainAxisSize.max,
