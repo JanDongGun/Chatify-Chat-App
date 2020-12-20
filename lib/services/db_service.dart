@@ -1,3 +1,4 @@
+import 'package:chatify/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chatify/models/contact.dart';
 import '../models/conversation.dart';
@@ -30,6 +31,30 @@ class DBService {
   Future<void> updateUserLastSeenTime(String _userID) {
     var _ref = _db.collection(_userCollection).doc(_userID);
     return _ref.update({"lastScreen": Timestamp.now()});
+  }
+
+  Future<void> sendMessage(String _conversationID, Message _message) {
+    var _ref = _db.collection(_userConversations).doc(_conversationID);
+    var _messageType = "";
+    switch (_message.type) {
+      case MessageType.Text:
+        _messageType = "text";
+        break;
+      case MessageType.Image:
+        _messageType = "image";
+        break;
+      default:
+    }
+    return _ref.update({
+      "messages": FieldValue.arrayUnion([
+        {
+          "message": _message.content,
+          "senderID": _message.senderID,
+          "timestamp": _message.timestamp,
+          "type": _messageType,
+        }
+      ])
+    });
   }
 
   Stream<Contact> getUserData(String _userID) {

@@ -23,8 +23,14 @@ class ConversationPage extends StatefulWidget {
 class _ConversationPageState extends State<ConversationPage> {
   double _deviceHeight;
   double _deviceWidth;
-
+  GlobalKey<FormState> _formKey;
+  String _messageText;
   AuthProvider _auth;
+
+  _ConversationPageState() {
+    _formKey = GlobalKey<FormState>();
+    _messageText = "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +186,7 @@ class _ConversationPageState extends State<ConversationPage> {
       margin: EdgeInsets.symmetric(
           horizontal: _deviceWidth * 0.04, vertical: _deviceHeight * 0.03),
       child: Form(
+        key: _formKey,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           mainAxisSize: MainAxisSize.max,
@@ -206,8 +213,14 @@ class _ConversationPageState extends State<ConversationPage> {
 
           return null;
         },
-        onChanged: (_input) {},
-        onSaved: (_input) {},
+        onChanged: (_input) {
+          _formKey.currentState.save();
+        },
+        onSaved: (_input) {
+          setState(() {
+            _messageText = _input;
+          });
+        },
         cursorColor: Colors.white,
         decoration: InputDecoration(
           border: InputBorder.none,
@@ -229,7 +242,20 @@ class _ConversationPageState extends State<ConversationPage> {
             Icons.send,
             color: Colors.white,
           ),
-          onPressed: () {}),
+          onPressed: () {
+            if (_formKey.currentState.validate()) {
+              DBService.instance.sendMessage(
+                  this.widget._conversationID,
+                  Message(
+                      content: _messageText,
+                      timestamp: Timestamp.now(),
+                      senderID: _auth.user.uid,
+                      type: MessageType.Text));
+            }
+
+            _formKey.currentState.reset();
+            FocusScope.of(_context).unfocus();
+          }),
     );
   }
 
