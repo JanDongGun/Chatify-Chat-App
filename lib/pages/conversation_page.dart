@@ -1,4 +1,6 @@
 import 'package:chatify/models/message.dart';
+import 'package:chatify/services/cloud_storage_service.dart';
+import 'package:chatify/services/media_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -6,6 +8,7 @@ import '../services/db_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:chatify/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 class ConversationPage extends StatefulWidget {
   String _conversationID;
@@ -108,8 +111,11 @@ class _ConversationPageState extends State<ConversationPage> {
           SizedBox(
             width: 15,
           ),
-          _textMessageBubble(
-              _isOwnMessage, _message.content, _message.timestamp),
+          _message.type == MessageType.Text
+              ? _textMessageBubble(
+                  _isOwnMessage, _message.content, _message.timestamp)
+              : _imageMessageBubble(
+                  _isOwnMessage, _message.content, _message.timestamp),
         ],
       ),
     );
@@ -176,6 +182,54 @@ class _ConversationPageState extends State<ConversationPage> {
     );
   }
 
+  Widget _imageMessageBubble(
+      bool _isOwnerMessage, String _imageURL, Timestamp _messageTimestamp) {
+    List<Color> _colorScheme = _isOwnerMessage
+        ? [Colors.blue, Color.fromRGBO(42, 117, 188, 1)]
+        : [Color.fromRGBO(69, 69, 69, 1), Color.fromRGBO(43, 43, 43, 1)];
+    return Container(
+      margin: _isOwnerMessage
+          ? EdgeInsets.only(right: 20)
+          : EdgeInsets.only(right: 0),
+      // width: _deviceWidth * 0.6,
+      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 13),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          gradient: LinearGradient(
+            colors: _colorScheme,
+            stops: [0.30, 0.70],
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
+          )),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: _deviceHeight * 0.30,
+            width: _deviceWidth * 0.4,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              image: DecorationImage(
+                image: NetworkImage(_imageURL),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Text(
+            timeago.format(_messageTimestamp.toDate()),
+            style: TextStyle(
+              color: Colors.white70,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _messageField(BuildContext _context) {
     return Container(
       height: _deviceHeight * 0.08,
@@ -214,12 +268,14 @@ class _ConversationPageState extends State<ConversationPage> {
           return null;
         },
         onChanged: (_input) {
-          _formKey.currentState.save();
-        },
-        onSaved: (_input) {
           setState(() {
             _messageText = _input;
           });
+        },
+        onSaved: (_input) {
+          // setState(() {
+          //   _messageText = _input;
+          // });
         },
         cursorColor: Colors.white,
         decoration: InputDecoration(
@@ -264,7 +320,23 @@ class _ConversationPageState extends State<ConversationPage> {
       height: _deviceHeight * 0.05,
       width: _deviceHeight * 0.05,
       child: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          var _image = await MediaService.instance.getImageFromLibrary();
+          if (_image != null) {
+            var _result = await CloudStorageService.instance
+                .uploadMediaMessage(_auth.user.uid, File(_image.path));
+            var _imageURL = await _result.ref.getDownloadURL();
+
+            await DBService.instance.sendMessage(
+                this.widget._conversationID,
+                Message(
+                  senderID: _auth.user.uid,
+                  content: _imageURL,
+                  timestamp: Timestamp.now(),
+                  type: MessageType.Image,
+                ));
+          }
+        },
         child: Icon(Icons.camera_enhance),
       ),
     );
