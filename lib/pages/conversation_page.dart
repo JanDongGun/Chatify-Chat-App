@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chatify/models/message.dart';
 import 'package:chatify/services/cloud_storage_service.dart';
 import 'package:chatify/services/media_service.dart';
@@ -26,6 +28,7 @@ class ConversationPage extends StatefulWidget {
 class _ConversationPageState extends State<ConversationPage> {
   double _deviceHeight;
   double _deviceWidth;
+  ScrollController _scrollController;
   GlobalKey<FormState> _formKey;
   String _messageText;
   AuthProvider _auth;
@@ -33,6 +36,7 @@ class _ConversationPageState extends State<ConversationPage> {
   _ConversationPageState() {
     _formKey = GlobalKey<FormState>();
     _messageText = "";
+    _scrollController = ScrollController();
   }
 
   @override
@@ -78,10 +82,17 @@ class _ConversationPageState extends State<ConversationPage> {
           stream:
               DBService.instance.getConversation(this.widget._conversationID),
           builder: (BuildContext _context, _snapshot) {
+            Timer(
+                Duration(milliseconds: 100),
+                () => {
+                      _scrollController
+                          .jumpTo(_scrollController.position.maxScrollExtent),
+                    });
             var _conversationData = _snapshot.data;
 
             if (_conversationData != null) {
               return ListView.builder(
+                  controller: _scrollController,
                   itemCount: _conversationData.messages.length,
                   itemBuilder: (BuildContext _context, int _index) {
                     var _message = _conversationData.messages[_index];
@@ -192,7 +203,7 @@ class _ConversationPageState extends State<ConversationPage> {
           ? EdgeInsets.only(right: 20)
           : EdgeInsets.only(right: 0),
       // width: _deviceWidth * 0.6,
-      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 13),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           gradient: LinearGradient(
@@ -206,8 +217,8 @@ class _ConversationPageState extends State<ConversationPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: _deviceHeight * 0.30,
-            width: _deviceWidth * 0.4,
+            height: _deviceHeight * 0.5,
+            width: _deviceWidth * 0.5,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               image: DecorationImage(

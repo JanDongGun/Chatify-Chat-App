@@ -1,3 +1,4 @@
+import 'package:chatify/models/message.dart';
 import 'package:chatify/services/db_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,10 @@ class RecentConversationsPage extends StatelessWidget {
                                 }));
                               },
                               title: Text(_data[_index].name),
-                              subtitle: Text(_data[_index].lastMessage),
+                              subtitle: Text(
+                                  _data[_index].type == MessageType.Text
+                                      ? _data[_index].lastMessage
+                                      : 'Attachment Image'),
                               leading: Container(
                                 width: 50,
                                 height: 50,
