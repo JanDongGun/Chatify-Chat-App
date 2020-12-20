@@ -1,6 +1,9 @@
 import 'dart:ui';
 
+import 'package:chatify/models/conversation.dart';
+import 'package:chatify/pages/conversation_page.dart';
 import 'package:chatify/providers/auth_provider.dart';
+import 'package:chatify/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:chatify/services/db_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -95,6 +98,7 @@ class _SearchPageState extends State<SearchPage> {
                         itemCount: _userData.length,
                         itemBuilder: (BuildContext _context, int _index) {
                           var _user = _userData[_index];
+                          var _recepientID = _user.id;
                           var _currentTime = DateTime.now();
                           var _isUserActive = !_user.lastseen.toDate().isBefore(
                                 _currentTime.subtract(
@@ -104,6 +108,17 @@ class _SearchPageState extends State<SearchPage> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 7),
                             child: ListTile(
+                              onTap: () {
+                                DBService.instance.createOrGetConversation(
+                                    _auth.user.uid, _recepientID,
+                                    (String _conversationID) {
+                                  NavigationService.instance.navigateToRoute(
+                                      MaterialPageRoute(builder: (_context) {
+                                    return ConversationPage(_conversationID,
+                                        _recepientID, _user.image, _user.name);
+                                  }));
+                                });
+                              },
                               title: Text(_user.name),
                               leading: Container(
                                 width: 50,

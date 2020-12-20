@@ -32,7 +32,7 @@ class ConversationSnippet {
       conversationID: _data["conversationID"],
       lastMessage: _data["lastMessage"] != null ? _data["lastMessage"] : "",
       unseenCount: _data["unseenCount"],
-      timestamp: _data["timestamp"],
+      timestamp: _data["timestamp"] != null ? _data["timestamp"] : null,
       type: _messageType,
       name: _data["name"],
       image: _data["image"],

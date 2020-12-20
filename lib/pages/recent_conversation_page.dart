@@ -40,6 +40,9 @@ class RecentConversationsPage extends StatelessWidget {
               builder: (_context, _snapshot) {
                 var _data = _snapshot.data;
                 if (_data != null) {
+                  _data.removeWhere((_c) {
+                    return _c.timestamp == null;
+                  });
                   return _data.length != 0
                       ? ListView.builder(
                           itemCount: _data.length,
