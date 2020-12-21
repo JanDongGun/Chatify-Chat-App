@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chatify/services/snackbar_service.dart';
 import 'package:chatify/services/db_service.dart';
-import 'package:chatify/pages/successSendEmail.dart';
 
 enum AuthStatus {
   NotAuthenticated,
@@ -120,12 +119,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       await _auth.sendPasswordResetEmail(email: _email);
       emailStatus = EmailStatus.Sended;
-      NavigationService.instance
-          .navigateToRoute(MaterialPageRoute(builder: (BuildContext _context) {
-        return SuccessSendEmailResetPassword(
-          email: _email,
-        );
-      }));
+      NavigationService.instance.navigateToReplacement('successSendEmail');
     } catch (e) {
       print(e);
       emailStatus = EmailStatus.Error;

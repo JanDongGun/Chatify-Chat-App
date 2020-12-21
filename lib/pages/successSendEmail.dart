@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:chatify/services/navigation_service.dart';
 
 class SuccessSendEmailResetPassword extends StatelessWidget {
-  final String email;
   double _deviceHeight;
   double _deviceWidth;
-  SuccessSendEmailResetPassword({this.email});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +53,7 @@ class SuccessSendEmailResetPassword extends StatelessWidget {
             ),
           ),
           Text(
-            "If an account exists $email, you'll receive an email with a reset password link.",
+            "We have sent a password recovery instruction to your email",
             style: TextStyle(
               fontSize: 20,
               color: Colors.white70,

@@ -1,4 +1,5 @@
 import 'package:chatify/pages/forgotPassword_page.dart';
+import 'package:chatify/pages/successSendEmail.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'pages/login_page.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         "regis": (BuildContext _context) => RegisPage(),
         "home": (BuildContext _context) => HomePage(),
         "forgotPassword": (_context) => ForgotPasswordPage(),
+        "successSendEmail": (_context) => SuccessSendEmailResetPassword(),
       },
     );
   }
