@@ -11,6 +11,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:chatify/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class ConversationPage extends StatefulWidget {
   String _conversationID;

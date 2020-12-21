@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:chatify/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chatify/models/contact.dart';
@@ -110,7 +108,8 @@ class DBService {
     var _ref = _db
         .collection(_userCollection)
         .where("name", isGreaterThanOrEqualTo: _searchName)
-        .where("name", isLessThan: _searchName + 'z');
+        .where("name", isLessThanOrEqualTo: _searchName + 'z');
+
     return _ref.get().asStream().map((_snapshot) {
       return _snapshot.docs.map((_doc) {
         return Contact.fromFirestore(_doc);

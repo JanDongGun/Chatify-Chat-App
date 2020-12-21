@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chatify/services/snackbar_service.dart';
 import 'package:chatify/services/db_service.dart';
+import 'package:chatify/pages/successSendEmail.dart';
 
 enum AuthStatus {
   NotAuthenticated,
@@ -12,15 +13,22 @@ enum AuthStatus {
   Error,
 }
 
+enum EmailStatus {
+  Sending,
+  Sended,
+  Error,
+}
+
 class AuthProvider extends ChangeNotifier {
   User user;
   AuthStatus status;
+  EmailStatus emailStatus;
   FirebaseAuth _auth;
 
   static AuthProvider instance = AuthProvider();
   AuthProvider() {
     _auth = FirebaseAuth.instance;
-    _checkCurrentUserIsAuthenticated();
+    // _checkCurrentUserIsAuthenticated();
   }
 
   void _autoLogin() {
@@ -102,7 +110,30 @@ class AuthProvider extends ChangeNotifier {
       SnackBarService.instance
           .showSnackBar('Logged out successfully', 'success');
     } catch (e) {
-      SnackBarService.instance.showSnackBar("Error Logging Out", 'Error');
+      SnackBarService.instance.showSnackBar("Error Logging Out", 'error');
     }
+  }
+
+  void sendpasswordResetEmail(String _email) async {
+    emailStatus = EmailStatus.Sending;
+    notifyListeners();
+    try {
+      await _auth.sendPasswordResetEmail(email: _email);
+      emailStatus = EmailStatus.Sended;
+      NavigationService.instance
+          .navigateToRoute(MaterialPageRoute(builder: (BuildContext _context) {
+        return SuccessSendEmailResetPassword(
+          email: _email,
+        );
+      }));
+    } catch (e) {
+      print(e);
+      emailStatus = EmailStatus.Error;
+      if (e.code == 'user-not-found') {
+        SnackBarService.instance.showSnackBar("Email not found", 'error');
+      }
+    }
+
+    notifyListeners();
   }
 }
