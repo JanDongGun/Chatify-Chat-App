@@ -65,6 +65,7 @@ class _RegisPageState extends State<RegisPage> {
               _registerButton(),
               _backToLoginPageButton(),
             ],
+            
           ),
         );
       },
